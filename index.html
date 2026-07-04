@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Трекер задач</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Шапка приложения -->
+  <header class="app-header">
+    <h1 class="app-title">📋 Трекер задач</h1>
+    <div class="app-actions">
+      <button id="theme-toggle" class="btn btn-icon" title="Сменить тему">🌙</button>
+      <button id="export-btn" class="btn" title="Экспорт в JSON">⬇️ Экспорт</button>
+      <button id="import-btn" class="btn" title="Импорт из JSON">⬆️ Импорт</button>
+      <input type="file" id="import-file" accept=".json" hidden>
+    </div>
+  </header>
+
+  <!-- Канбан-доска с тремя колонками -->
+  <main class="board">
+    <!-- Колонка "Новые" -->
+    <section class="column" data-status="todo">
+      <header class="column-header">
+        <h2>Новые</h2>
+        <span class="counter" data-counter="todo">0</span>
+      </header>
+      <div class="column-body" data-drop-zone="todo"></div>
+      <button class="btn btn-add" data-add="todo">+ Добавить задачу</button>
+    </section>
+
+    <!-- Колонка "В работе" -->
+    <section class="column" data-status="in-progress">
+      <header class="column-header">
+        <h2>В работе</h2>
+        <span class="counter" data-counter="in-progress">0</span>
+      </header>
+      <div class="column-body" data-drop-zone="in-progress"></div>
+      <button class="btn btn-add" data-add="in-progress">+ Добавить задачу</button>
+    </section>
+
+    <!-- Колонка "Готово" -->
+    <section class="column" data-status="done">
+      <header class="column-header">
+        <h2>Готово</h2>
+        <span class="counter" data-counter="done">0</span>
+      </header>
+      <div class="column-body" data-drop-zone="done"></div>
+      <button class="btn btn-add" data-add="done">+ Добавить задачу</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

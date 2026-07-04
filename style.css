@@ -8,6 +8,11 @@
   --primary: #3b82f6;
   --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   --radius: 10px;
+  
+  /* Цвета приоритетов */
+  --priority-low: #10b981;
+  --priority-medium: #f59e0b;
+  --priority-high: #ef4444;
 }
 
 /* ===== Сброс стилей ===== */
@@ -122,6 +127,81 @@ body {
   flex-direction: column;
   gap: 10px;
   padding: 4px;
+}
+
+/* ===== Карточка задачи ===== */
+.task-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--priority-medium);
+  border-radius: 6px;
+  padding: 12px;
+  cursor: grab;
+  transition: transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.task-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+
+/* Цвета приоритетов */
+.task-card[data-priority="low"] {
+  border-left-color: var(--priority-low);
+}
+
+.task-card[data-priority="medium"] {
+  border-left-color: var(--priority-medium);
+}
+
+.task-card[data-priority="high"] {
+  border-left-color: var(--priority-high);
+}
+
+.task-title {
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+}
+
+.task-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.task-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.task-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+
+.task-actions button:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.task-actions .delete-btn:hover {
+  color: var(--priority-high);
 }
 
 /* ===== Адаптивность ===== */

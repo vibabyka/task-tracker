@@ -20,21 +20,18 @@ function saveTasks() {
 let tasks = loadTasks();
 
 // ===== ФУНКЦИЯ ПОЛУЧЕНИЯ ПУТИ К ИКОНКЕ =====
-// Чёрные иконки — для светлой темы
-// Розовые иконки (с буквой 's' в конце) — для тёмной темы
+// ИСПРАВЛЕНО: имена файлов на GitHub с большой буквы!
 function getIconPath(name) {
   const theme = document.documentElement.getAttribute('data-theme') || 'light';
+  // Первая буква с большой буквы (Calendar, Moon, Pencil, Trash, Sun)
+  const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
+  
   if (theme === 'dark') {
-    const pinkIcons = {
-      calendar: 'icons/calendars.png',
-      pencil: 'icons/pencils.png',
-      trash: 'icons/trashs.png',
-      moon: 'icons/moons.png',
-      sun: 'icons/suns.png'
-    };
-    return pinkIcons[name] || `icons/${name}s.png`;
+    // Розовые иконки для тёмной темы (с буквой 's' и большой буквы)
+    return `icons/${capitalName}s.png`;
   } else {
-    return `icons/${name}.png`;
+    // Чёрные иконки для светлой темы (с большой буквы)
+    return `icons/${capitalName}.png`;
   }
 }
 
@@ -75,15 +72,8 @@ function closeModal() {
 // ===== CRUD ОПЕРАЦИИ =====
 function saveTask(e) {
   e.preventDefault();
-
   const title = taskTitleInput.value.trim();
   if (!title) return;
-
-  // Название должно содержать минимум 3 символа
-  if (title.length < 3) {
-    alert('Название задачи должно содержать минимум 3 символа!');
-    return;
-  }
 
   const data = {
     title: title,
@@ -118,7 +108,6 @@ function saveTask(e) {
 
 function deleteTask(id) {
   if (!confirm('Удалить задачу?')) return;
-
   const index = tasks.findIndex(t => t.id === id);
   if (index !== -1) {
     tasks.splice(index, 1);
@@ -177,10 +166,8 @@ function handleDragLeave(e) {
 function handleDrop(e) {
   e.preventDefault();
   this.classList.remove('drag-over');
-
   const taskId = e.dataTransfer.getData('text/plain');
   const newStatus = this.dataset.dropZone;
-
   const task = tasks.find(t => t.id == taskId);
   if (task && task.status !== newStatus) {
     task.status = newStatus;
@@ -191,12 +178,10 @@ function handleDrop(e) {
 
 // ===== РЕНДЕРИНГ =====
 function renderTasks() {
-  // Очищаем все колонки
   document.querySelectorAll('.column-body').forEach(zone => {
     zone.innerHTML = '';
   });
 
-  // Создаём карточки
   tasks.forEach(task => {
     const card = document.createElement('article');
     card.className = 'task-card';
@@ -204,7 +189,7 @@ function renderTasks() {
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
 
-    // Используем getIconPath() для выбора иконки по теме
+    // ИСПОЛЬЗУЕМ getIconPath() для выбора иконки с правильным регистром
     card.innerHTML = `
       <div class="task-title">${task.title}</div>
       <div class="task-desc">${task.description}</div>
@@ -238,10 +223,7 @@ function renderTasks() {
     }
   });
 
-  // Инициализируем Drag & Drop
   initDragAndDrop();
-
-  // Обновляем счётчики
   updateCounters();
 }
 
@@ -284,11 +266,9 @@ function saveTheme(theme) {
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-
   document.documentElement.setAttribute('data-theme', newTheme);
   saveTheme(newTheme);
   updateThemeIcon(newTheme);
-
   // Перерисовываем карточки с новыми иконками
   renderTasks();
 }
@@ -314,7 +294,6 @@ const importFile = document.getElementById('import-file');
 function exportTasks() {
   const dataStr = JSON.stringify(tasks, null, 2);
   const dataBlob = new Blob([dataStr], { type: 'application/json' });
-
   const url = URL.createObjectURL(dataBlob);
   const link = document.createElement('a');
   link.href = url;
@@ -331,13 +310,6 @@ function importTasks(event) {
   reader.onload = function(e) {
     try {
       const importedTasks = JSON.parse(e.target.result);
-
-      // Проверка на пустой массив (ШАГ 6)
-      if (Array.isArray(importedTasks) && importedTasks.length === 0) {
-        alert('Файл не содержит задач!');
-        return;
-      }
-
       if (Array.isArray(importedTasks)) {
         if (confirm(`Импортировать ${importedTasks.length} задач? Текущие задачи будут заменены.`)) {
           tasks = importedTasks;
@@ -353,7 +325,6 @@ function importTasks(event) {
     }
   };
   reader.readAsText(file);
-
   event.target.value = '';
 }
 

@@ -43,21 +43,54 @@
 }
 
 /* ===== ТЁМНАЯ ТЕМА ===== */
+/* ===== ТЁМНАЯ ТЕМА ===== */
 [data-theme="dark"] {
-  --bg: #1a0f14;
-  --surface: rgba(40, 20, 30, 0.85);
-  --surface-solid: #2a1520;
+  --bg: #0f0709;
+  --surface: rgba(26, 11, 18, 0.95);
+  --surface-solid: #1a0b12;
   --text: #f9f5f7;
   --text-muted: #d1c4c8;
   --text-light: #9a8a9c;
-  --border: rgba(244, 122, 173, 0.3);
-  --border-strong: rgba(244, 122, 173, 0.5);
-  --gradient-bg: linear-gradient(135deg, #1a0f14 0%, #2a1520 50%, #1f1018 100%);
-  --gradient-card: linear-gradient(145deg, rgba(42, 21, 32, 0.9) 0%, rgba(60, 30, 45, 0.9) 100%);
-  --shadow-sm: 0 2px 8px rgba(244, 122, 173, 0.2);
-  --shadow-md: 0 4px 16px rgba(244, 122, 173, 0.25);
-  --shadow-lg: 0 8px 32px rgba(244, 122, 173, 0.3);
-  --shadow-xl: 0 12px 48px rgba(244, 122, 173, 0.35);
+  --border: rgba(244, 122, 173, 0.25);
+  --border-strong: rgba(244, 122, 173, 0.4);
+  --gradient-bg: linear-gradient(135deg, #0f0709 0%, #1a0b12 50%, #140818 100%);
+  --gradient-card: linear-gradient(145deg, rgba(26, 11, 18, 0.95) 0%, rgba(42, 21, 32, 0.9) 100%);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+}
+
+[data-theme="dark"] body {
+  background: var(--gradient-bg);
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .column {
+  background: var(--gradient-card);
+}
+
+[data-theme="dark"] .task-card {
+  background: var(--surface-solid);
+}
+
+/* Мобильная адаптация для тёмной темы */
+@media (max-width: 768px) {
+  [data-theme="dark"] body {
+    background: #0f0709; /* Сплошной тёмный фон на мобильных */
+  }
+  
+  [data-theme="dark"] .column {
+    background: rgba(26, 11, 18, 0.98);
+  }
+  
+  [data-theme="dark"] .task-card {
+    background: rgba(42, 21, 32, 0.95);
+  }
+  
+  [data-theme="dark"] .app-header {
+    background: rgba(15, 7, 9, 0.98);
+  }
 }
 
 /* ===== Сброс стилей ===== */

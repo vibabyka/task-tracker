@@ -79,6 +79,12 @@ function saveTask(e) {
   const title = taskTitleInput.value.trim();
   if (!title) return;
 
+  // Валидация: название должно содержать минимум 3 символа
+  if (title.length < 3) {
+    alert('Название задачи должно содержать минимум 3 символа!');
+    return;
+  }
+
   const data = {
     title: title,
     description: taskDescInput.value.trim(),
@@ -289,17 +295,14 @@ function toggleTheme() {
 
 function updateThemeIcon(theme) {
   if (theme === 'light') {
-    // В светлой теме — чёрная луна (предложение включить тёмную)
     themeIcon.src = getIconPath('moon');
     themeIcon.alt = 'Переключить на тёмную тему';
   } else {
-    // В тёмной теме — розовое солнце (предложение включить светлую)
     themeIcon.src = getIconPath('sun');
     themeIcon.alt = 'Переключить на светлую тему';
   }
 }
 
-// Инициализация темы
 loadTheme();
 themeToggle.addEventListener('click', toggleTheme);
 
@@ -328,6 +331,12 @@ function importTasks(event) {
   reader.onload = function(e) {
     try {
       const importedTasks = JSON.parse(e.target.result);
+
+      // Проверка на пустой массив (ШАГ 6)
+      if (Array.isArray(importedTasks) && importedTasks.length === 0) {
+        alert('Файл не содержит задач!');
+        return;
+      }
 
       if (Array.isArray(importedTasks)) {
         if (confirm(`Импортировать ${importedTasks.length} задач? Текущие задачи будут заменены.`)) {

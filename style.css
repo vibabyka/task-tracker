@@ -1,27 +1,18 @@
 /* ===== CSS-переменные (Розовый градиент F47AAD - DBCBCE) ===== */
 :root {
-  /* Основные цвета градиента */
   --gradient-start: #F47AAD;
   --gradient-end: #DBCBCE;
-
-  /* Градиенты */
   --gradient-bg: linear-gradient(135deg, #F47AAD 0%, #DBCBCE 100%);
   --gradient-accent: linear-gradient(135deg, #F47AAD 0%, #e89bb8 50%, #DBCBCE 100%);
   --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(219, 203, 206, 0.6) 100%);
   --gradient-header: linear-gradient(90deg, #F47AAD 0%, #DBCBCE 100%);
   --gradient-primary: linear-gradient(135deg, #F47AAD 0%, #e89bb8 100%);
-
-  /* Фоновые цвета */
   --bg: #faf5f7;
   --surface: rgba(255, 255, 255, 0.85);
   --surface-solid: #ffffff;
-
-  /* Текст */
   --text: #2d1b2e;
   --text-muted: #6b5a6e;
   --text-light: #9a8a9c;
-
-  /* Границы и тени */
   --border: rgba(244, 122, 173, 0.25);
   --border-strong: rgba(244, 122, 173, 0.4);
   --shadow-sm: 0 2px 8px rgba(244, 122, 173, 0.1);
@@ -29,14 +20,10 @@
   --shadow-lg: 0 8px 32px rgba(244, 122, 173, 0.2);
   --shadow-xl: 0 12px 48px rgba(244, 122, 173, 0.25);
   --shadow-glow: 0 0 30px rgba(244, 122, 173, 0.3);
-
-  /* Скругления */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
-
-  /* Цвета приоритетов */
   --priority-low: #10b981;
   --priority-medium: #f59e0b;
   --priority-high: #ef4444;
@@ -58,9 +45,12 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+  /* Яркие цвета приоритетов для тёмной темы */
+  --priority-low: #34d399;
+  --priority-medium: #fbbf24;
+  --priority-high: #f87171;
 }
 
-/* ===== Сброс стилей ===== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -78,7 +68,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Декоративные размытые круги на фоне */
 body::before,
 body::after {
   content: '';
@@ -109,12 +98,8 @@ body::after {
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translate(0, 0) scale(1);
-  }
-  50% {
-    transform: translate(30px, -30px) scale(1.1);
-  }
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(30px, -30px) scale(1.1); }
 }
 
 /* ===== Шапка ===== */
@@ -307,7 +292,7 @@ body::after {
 .task-card {
   background: var(--surface-solid);
   border: 1px solid var(--border);
-  border-left: 4px solid var(--priority-medium);
+  border-left: 5px solid var(--priority-medium);
   border-radius: var(--radius-md);
   padding: 16px;
   cursor: grab;
@@ -317,10 +302,10 @@ body::after {
   overflow: hidden;
   -webkit-user-select: none;
   -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: pan-y;
 }
 
 .task-card::before {
@@ -352,29 +337,45 @@ body::after {
   box-shadow: var(--shadow-xl);
 }
 
-/* Цвета приоритетов */
+/* Цвета приоритетов - СВЕТЛАЯ ТЕМА */
 .task-card[data-priority="low"] {
-  border-left-color: var(--priority-low);
+  border-left-color: #10b981;
+  border-left-width: 5px;
 }
-
 .task-card[data-priority="low"]::before {
   background: linear-gradient(90deg, #10b981, #34d399);
 }
 
 .task-card[data-priority="medium"] {
-  border-left-color: var(--priority-medium);
+  border-left-color: #f59e0b;
+  border-left-width: 5px;
 }
-
 .task-card[data-priority="medium"]::before {
   background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
 .task-card[data-priority="high"] {
-  border-left-color: var(--priority-high);
+  border-left-color: #ef4444;
+  border-left-width: 5px;
 }
-
 .task-card[data-priority="high"]::before {
   background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* Цвета приоритетов - ТЁМНАЯ ТЕМА (яркие, неоновые) */
+[data-theme="dark"] .task-card[data-priority="low"] {
+  border-left-color: #34d399;
+  box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+}
+
+[data-theme="dark"] .task-card[data-priority="medium"] {
+  border-left-color: #fbbf24;
+  box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+}
+
+[data-theme="dark"] .task-card[data-priority="high"] {
+  border-left-color: #f87171;
+  box-shadow: 0 0 12px rgba(248, 113, 113, 0.3);
 }
 
 .task-title {
@@ -398,12 +399,37 @@ body::after {
   align-items: center;
   font-size: 0.75rem;
   color: var(--text-light);
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .task-date {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+
+/* Яркие бейджи в тёмной теме */
+[data-theme="dark"] .priority-badge.low {
+  background: rgba(52, 211, 153, 0.2);
+  color: #34d399;
+  border-color: rgba(52, 211, 153, 0.5);
+  box-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
+}
+
+[data-theme="dark"] .priority-badge.medium {
+  background: rgba(251, 191, 36, 0.2);
+  color: #fbbf24;
+  border-color: rgba(251, 191, 36, 0.5);
+  box-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
+}
+
+[data-theme="dark"] .priority-badge.high {
+  background: rgba(248, 113, 113, 0.2);
+  color: #f87171;
+  border-color: rgba(248, 113, 113, 0.5);
+  box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
 }
 
 .task-actions {
@@ -416,12 +442,18 @@ body::after {
   border: none;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   transition: all 0.2s ease;
 }
 
 .task-actions button:hover {
-  background: rgba(244, 122, 173, 0.1);
+  background: rgba(244, 122, 173, 0.15);
+  transform: scale(1.15);
+}
+
+.task-actions .delete-btn:hover {
+  color: var(--priority-high);
+  background: rgba(239, 68, 68, 0.1);
 }
 
 /* ===== Модальное окно ===== */
@@ -554,6 +586,109 @@ body::after {
   border-top: 1px solid var(--border);
 }
 
+/* ===== PNG Иконки ===== */
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+  object-fit: contain;
+}
+
+.icon-calendar {
+  margin-right: 6px;
+  opacity: 0.8;
+}
+
+.icon-pencil,
+.icon-trash {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.task-actions button:hover .icon {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.btn-icon .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-theme {
+  transition: transform 0.3s ease;
+}
+
+.btn-icon:hover .icon-theme {
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* ===== Анимация появления карточек ===== */
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.task-card {
+  animation: cardAppear 0.4s ease-out;
+}
+
+.task-card:nth-child(1) { animation-delay: 0.05s; }
+.task-card:nth-child(2) { animation-delay: 0.1s; }
+.task-card:nth-child(3) { animation-delay: 0.15s; }
+.task-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* ===== Touch Drag & Drop ===== */
+.task-card.touch-dragging {
+  opacity: 0.3;
+  transform: scale(0.95);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  touch-action: none;
+}
+
+.touch-clone {
+  opacity: 0.95;
+  transform: scale(1.08) rotate(2deg);
+  box-shadow: 
+    0 20px 60px rgba(244, 122, 173, 0.4),
+    0 10px 30px rgba(0, 0, 0, 0.2);
+  border-radius: 12px;
+  animation: touchPulse 0.6s ease-in-out infinite;
+}
+
+@keyframes touchPulse {
+  0%, 100% { transform: scale(1.08) rotate(2deg); }
+  50% { transform: scale(1.1) rotate(-1deg); }
+}
+
+.column.column-highlight {
+  background: rgba(244, 122, 173, 0.15) !important;
+  border: 2px dashed #F47AAD !important;
+  box-shadow: 
+    0 0 30px rgba(244, 122, 173, 0.3),
+    inset 0 0 20px rgba(244, 122, 173, 0.1) !important;
+  transition: all 0.3s ease;
+}
+
+.task-card.task-dropped {
+  animation: dropSuccess 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes dropSuccess {
+  0% { transform: scale(0.8); opacity: 0; }
+  50% { transform: scale(1.05); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
 /* ===== Адаптивность ===== */
 @media (max-width: 1024px) {
   .board {
@@ -607,156 +742,6 @@ body::after {
   }
 }
 
-/* ===== Скроллбар ===== */
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(244, 122, 173, 0.08);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--gradient-primary);
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--gradient-accent);
-}
-
-/* ===== Анимация появления карточек ===== */
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.task-card {
-  animation: cardAppear 0.4s ease-out;
-}
-
-.task-card:nth-child(1) { animation-delay: 0.05s; }
-.task-card:nth-child(2) { animation-delay: 0.1s; }
-.task-card:nth-child(3) { animation-delay: 0.15s; }
-.task-card:nth-child(4) { animation-delay: 0.2s; }
-
-/* ===== PNG Иконки ===== */
-.icon {
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  vertical-align: middle;
-  transition: all 0.2s ease;
-  object-fit: contain;
-}
-
-.icon-calendar {
-  margin-right: 6px;
-  opacity: 0.8;
-}
-
-.icon-pencil,
-.icon-trash {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-}
-
-.task-actions button:hover .icon {
-  opacity: 1;
-  transform: scale(1.15);
-}
-
-/* Иконка темы в шапке */
-.btn-icon {
-  padding: 8px 12px;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-}
-
-.btn-icon:hover {
-  background: rgba(244, 122, 173, 0.15);
-}
-
-.btn-icon .icon {
-  width: 24px;
-  height: 24px;
-}
-
-.icon-theme {
-  transition: transform 0.3s ease;
-}
-
-.btn-icon:hover .icon-theme {
-  transform: rotate(20deg) scale(1.1);
-}
-
-/* ===== Touch Drag & Drop (мобильные) ===== */
-.task-card.touch-dragging {
-  opacity: 0.3;
-  transform: scale(0.95);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.touch-clone {
-  opacity: 0.95;
-  transform: scale(1.08) rotate(2deg);
-  box-shadow: 
-    0 20px 60px rgba(244, 122, 173, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  transition: transform 0.1s ease;
-  animation: touchPulse 0.6s ease-in-out infinite;
-}
-
-@keyframes touchPulse {
-  0%, 100% {
-    transform: scale(1.08) rotate(2deg);
-  }
-  50% {
-    transform: scale(1.1) rotate(-1deg);
-  }
-}
-
-.column.column-highlight {
-  background: rgba(244, 122, 173, 0.15) !important;
-  border: 2px dashed #F47AAD !important;
-  box-shadow: 
-    0 0 30px rgba(244, 122, 173, 0.3),
-    inset 0 0 20px rgba(244, 122, 173, 0.1) !important;
-  transition: all 0.3s ease;
-}
-
-.task-card.task-dropped {
-  animation: dropSuccess 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes dropSuccess {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
 /* ===== ТЁМНАЯ ТЕМА - МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
 @media (max-width: 768px) {
   [data-theme="dark"] body {
@@ -794,88 +779,22 @@ body::after {
   }
 }
 
-/* ===== Запрет случайного перетаскивания при скролле ===== */
-.task-card {
-  /* Разрешаем скролл по умолчанию, запрещаем перетаскивание браузером */
-  touch-action: pan-y;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  user-select: none;
+/* ===== Скроллбар ===== */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
 }
 
-/* Когда перетаскивание активно — запрещаем скролл */
-.task-card.touch-dragging {
-  touch-action: none;
+::-webkit-scrollbar-track {
+  background: rgba(244, 122, 173, 0.08);
+  border-radius: 10px;
 }
 
-/* Визуальная обратная связь при удержании (перед началом перетаскивания) */
-.task-card.touch-holding {
-  transform: scale(0.98);
-  transition: transform 0.15s ease;
+::-webkit-scrollbar-thumb {
+  background: var(--gradient-primary);
+  border-radius: 10px;
 }
 
-/* ===== Touch Drag & Drop с задержкой ===== */
-.task-card {
-  touch-action: pan-y;
-  -webkit-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.task-card.touch-dragging {
-  opacity: 0.3;
-  transform: scale(0.95);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.touch-clone {
-  opacity: 0.95;
-  transform: scale(1.08) rotate(2deg);
-  box-shadow: 0 20px 60px rgba(244, 122, 173, 0.4), 0 10px 30px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  animation: touchPulse 0.6s ease-in-out infinite;
-}
-
-@keyframes touchPulse {
-  0%, 100% { transform: scale(1.08) rotate(2deg); }
-  50% { transform: scale(1.1) rotate(-1deg); }
-}
-
-.column.column-highlight {
-  background: rgba(244, 122, 173, 0.15) !important;
-  border: 2px dashed #F47AAD !important;
-  box-shadow: 0 0 30px rgba(244, 122, 173, 0.3), inset 0 0 20px rgba(244, 122, 173, 0.1) !important;
-  transition: all 0.3s ease;
-}
-
-.task-card.task-dropped {
-  animation: dropSuccess 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes dropSuccess {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* Тёмная тема на мобильных */
-@media (max-width: 768px) {
-  [data-theme="dark"] body {
-    background: #0f0709;
-    background-attachment: scroll;
-  }
-  [data-theme="dark"] body::before,
-  [data-theme="dark"] body::after {
-    display: none;
-  }
-  [data-theme="dark"] .column {
-    background: rgba(26, 11, 18, 0.98);
-  }
-  [data-theme="dark"] .task-card {
-    background: rgba(42, 21, 32, 0.95);
-  }
-  [data-theme="dark"] .app-header {
-    background: rgba(15, 7, 9, 0.98);
-  }
+::-webkit-scrollbar-thumb:hover {
+  background: var(--gradient-accent);
 }

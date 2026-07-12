@@ -173,7 +173,7 @@ function handleDrop(e) {
   }
 }
 
-// ===== TOUCH DRAG & DROP (мобильные) С ЗАДЕРЖКОЙ =====
+// ===== TOUCH DRAG & DROP (мобильные) =====
 let touchItem = null;
 let touchClone = null;
 let touchStartX = 0;
@@ -359,6 +359,7 @@ function renderTasks() {
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
 
+    // БЕЗ бейджа приоритета - только дата и кнопки
     card.innerHTML = '<div class="task-title">' + task.title + '</div>' +
       '<div class="task-desc">' + task.description + '</div>' +
       '<div class="task-meta">' +

@@ -682,3 +682,8 @@ body::after {
 .btn-icon:hover .icon-theme {
   transform: rotate(20deg) scale(1.1);
 }
+
+/* Улучшение анимации кнопок */
+.btn:active {
+  transform: scale(0.98);
+}

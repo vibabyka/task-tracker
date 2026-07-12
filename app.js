@@ -79,7 +79,7 @@ function saveTask(e) {
   const title = taskTitleInput.value.trim();
   if (!title) return;
 
-  // Валидация: название должно содержать минимум 3 символа
+  // Название должно содержать минимум 3 символа
   if (title.length < 3) {
     alert('Название задачи должно содержать минимум 3 символа!');
     return;

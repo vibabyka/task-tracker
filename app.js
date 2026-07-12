@@ -102,6 +102,74 @@ function deleteTask(id) {
   }
 }
 
+// ===== DRAG & DROP =====
+function initDragAndDrop() {
+  const cards = document.querySelectorAll('.task-card');
+  const dropZones = document.querySelectorAll('.column-body');
+  
+  // Инициализация карточек
+  cards.forEach(card => {
+    card.addEventListener('dragstart', handleDragStart);
+    card.addEventListener('dragend', handleDragEnd);
+  });
+  
+  // Инициализация зон сброса
+  dropZones.forEach(zone => {
+    zone.addEventListener('dragover', handleDragOver);
+    zone.addEventListener('dragenter', handleDragEnter);
+    zone.addEventListener('dragleave', handleDragLeave);
+    zone.addEventListener('drop', handleDrop);
+  });
+}
+
+function handleDragStart(e) {
+  this.classList.add('dragging');
+  e.dataTransfer.setData('text/plain', this.dataset.id);
+  e.dataTransfer.effectAllowed = 'move';
+}
+
+function handleDragEnd(e) {
+  this.classList.remove('dragging');
+  
+  // Убираем подсветку со всех зон
+  document.querySelectorAll('.column-body').forEach(zone => {
+    zone.classList.remove('drag-over');
+  });
+}
+
+function handleDragOver(e) {
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+}
+
+function handleDragEnter(e) {
+  e.preventDefault();
+  this.classList.add('drag-over');
+}
+
+function handleDragLeave(e) {
+  // Проверяем, что уходим именно из зоны, а не в её дочерний элемент
+  if (!this.contains(e.relatedTarget)) {
+    this.classList.remove('drag-over');
+  }
+}
+
+function handleDrop(e) {
+  e.preventDefault();
+  this.classList.remove('drag-over');
+  
+  const taskId = e.dataTransfer.getData('text/plain');
+  const newStatus = this.dataset.dropZone;
+  
+  // Находим задачу и меняем её статус
+  const task = tasks.find(t => t.id == taskId);
+  if (task && task.status !== newStatus) {
+    task.status = newStatus;
+    saveTasks();
+    renderTasks();
+  }
+}
+
 // ===== РЕНДЕРИНГ =====
 function renderTasks() {
   // Очищаем все колонки
@@ -113,9 +181,10 @@ function renderTasks() {
   tasks.forEach(task => {
     const card = document.createElement('article');
     card.className = 'task-card';
+    card.draggable = true; // Делаем карточку перетаскиваемой
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
-
+    
     card.innerHTML = `
       <div class="task-title">${task.title}</div>
       <div class="task-desc">${task.description}</div>
@@ -142,7 +211,10 @@ function renderTasks() {
     }
   });
 
-  // ОБНОВЛЯЕМ СЧЁТЧИКИ
+  // Инициализируем Drag & Drop
+  initDragAndDrop();
+  
+  // Обновляем счётчики
   updateCounters();
 }
 
@@ -166,8 +238,6 @@ function updateCounters() {
   if (todoCounter) todoCounter.textContent = counters['todo'];
   if (inProgressCounter) inProgressCounter.textContent = counters['in-progress'];
   if (doneCounter) doneCounter.textContent = counters['done'];
-  
-  console.log('Счётчики обновлены:', counters); // Для отладки
 }
 
 // ===== СОБЫТИЯ =====

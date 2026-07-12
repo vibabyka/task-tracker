@@ -315,3 +315,17 @@ body {
 .btn-primary:hover {
   background: #2563eb;
 }
+
+/* ===== Drag & Drop эффекты ===== */
+.task-card.dragging {
+  opacity: 0.4;
+  cursor: grabbing;
+  transform: scale(0.95);
+}
+
+.column-body.drag-over {
+  background: rgba(59, 130, 246, 0.1);
+  outline: 2px dashed var(--primary);
+  outline-offset: -4px;
+  border-radius: 6px;
+}

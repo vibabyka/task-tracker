@@ -19,6 +19,25 @@ function saveTasks() {
 // ===== ИНИЦИАЛИЗАЦИЯ =====
 let tasks = loadTasks();
 
+// ===== ФУНКЦИЯ ПОЛУЧЕНИЯ ПУТИ К ИКОНКЕ =====
+// Чёрные иконки — для светлой темы
+// Розовые иконки (с буквой 's' в конце) — для тёмной темы
+function getIconPath(name) {
+  const theme = document.documentElement.getAttribute('data-theme') || 'light';
+  if (theme === 'dark') {
+    const pinkIcons = {
+      calendar: 'icons/calendars.png',
+      pencil: 'icons/pencils.png',
+      trash: 'icons/trashs.png',
+      moon: 'icons/moons.png',
+      sun: 'icons/suns.png'
+    };
+    return pinkIcons[name] || `icons/${name}s.png`;
+  } else {
+    return `icons/${name}.png`;
+  }
+}
+
 // ===== МОДАЛЬНОЕ ОКНО =====
 const modal = document.getElementById('modal');
 const modalTitle = document.getElementById('modal-title');
@@ -56,16 +75,16 @@ function closeModal() {
 // ===== CRUD ОПЕРАЦИИ =====
 function saveTask(e) {
   e.preventDefault();
-  
+
   const title = taskTitleInput.value.trim();
   if (!title) return;
-  
+
   const data = {
     title: title,
     description: taskDescInput.value.trim(),
     priority: taskPriorityInput.value
   };
-  
+
   if (editingId) {
     const task = tasks.find(t => t.id === editingId);
     if (task) {
@@ -85,7 +104,7 @@ function saveTask(e) {
     };
     tasks.push(newTask);
   }
-  
+
   closeModal();
   renderTasks();
   saveTasks();
@@ -93,7 +112,7 @@ function saveTask(e) {
 
 function deleteTask(id) {
   if (!confirm('Удалить задачу?')) return;
-  
+
   const index = tasks.findIndex(t => t.id === id);
   if (index !== -1) {
     tasks.splice(index, 1);
@@ -106,12 +125,12 @@ function deleteTask(id) {
 function initDragAndDrop() {
   const cards = document.querySelectorAll('.task-card');
   const dropZones = document.querySelectorAll('.column-body');
-  
+
   cards.forEach(card => {
     card.addEventListener('dragstart', handleDragStart);
     card.addEventListener('dragend', handleDragEnd);
   });
-  
+
   dropZones.forEach(zone => {
     zone.addEventListener('dragover', handleDragOver);
     zone.addEventListener('dragenter', handleDragEnter);
@@ -152,10 +171,10 @@ function handleDragLeave(e) {
 function handleDrop(e) {
   e.preventDefault();
   this.classList.remove('drag-over');
-  
+
   const taskId = e.dataTransfer.getData('text/plain');
   const newStatus = this.dataset.dropZone;
-  
+
   const task = tasks.find(t => t.id == taskId);
   if (task && task.status !== newStatus) {
     task.status = newStatus;
@@ -166,25 +185,35 @@ function handleDrop(e) {
 
 // ===== РЕНДЕРИНГ =====
 function renderTasks() {
+  // Очищаем все колонки
   document.querySelectorAll('.column-body').forEach(zone => {
     zone.innerHTML = '';
   });
 
+  // Создаём карточки
   tasks.forEach(task => {
     const card = document.createElement('article');
     card.className = 'task-card';
     card.draggable = true;
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
-    
+
+    // Используем getIconPath() для выбора иконки по теме
     card.innerHTML = `
       <div class="task-title">${task.title}</div>
       <div class="task-desc">${task.description}</div>
       <div class="task-meta">
-        <span class="task-date">📅 ${task.createdAt}</span>
+        <span class="task-date">
+          <img src="${getIconPath('calendar')}" alt="Дата" class="icon icon-calendar">
+          ${task.createdAt}
+        </span>
         <div class="task-actions">
-          <button class="edit-btn" title="Редактировать">✏️</button>
-          <button class="delete-btn" title="Удалить">🗑️</button>
+          <button class="edit-btn" title="Редактировать">
+            <img src="${getIconPath('pencil')}" alt="Редактировать" class="icon icon-pencil">
+          </button>
+          <button class="delete-btn" title="Удалить">
+            <img src="${getIconPath('trash')}" alt="Удалить" class="icon icon-trash">
+          </button>
         </div>
       </div>
     `;
@@ -192,7 +221,7 @@ function renderTasks() {
     card.querySelector('.edit-btn').addEventListener('click', () => {
       openModal(task);
     });
-    
+
     card.querySelector('.delete-btn').addEventListener('click', () => {
       deleteTask(task.id);
     });
@@ -203,7 +232,10 @@ function renderTasks() {
     }
   });
 
+  // Инициализируем Drag & Drop
   initDragAndDrop();
+
+  // Обновляем счётчики
   updateCounters();
 }
 
@@ -231,6 +263,7 @@ function updateCounters() {
 
 // ===== ТЁМНАЯ ТЕМА =====
 const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
 
 function loadTheme() {
   const savedTheme = localStorage.getItem('task-tracker-theme') || 'light';
@@ -245,16 +278,28 @@ function saveTheme(theme) {
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
   const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-  
+
   document.documentElement.setAttribute('data-theme', newTheme);
   saveTheme(newTheme);
   updateThemeIcon(newTheme);
+
+  // Перерисовываем карточки с новыми иконками
+  renderTasks();
 }
 
 function updateThemeIcon(theme) {
-  themeToggle.textContent = theme === 'light' ? '🌙' : '️';
+  if (theme === 'light') {
+    // В светлой теме — чёрная луна (предложение включить тёмную)
+    themeIcon.src = getIconPath('moon');
+    themeIcon.alt = 'Переключить на тёмную тему';
+  } else {
+    // В тёмной теме — розовое солнце (предложение включить светлую)
+    themeIcon.src = getIconPath('sun');
+    themeIcon.alt = 'Переключить на светлую тему';
+  }
 }
 
+// Инициализация темы
 loadTheme();
 themeToggle.addEventListener('click', toggleTheme);
 
@@ -266,7 +311,7 @@ const importFile = document.getElementById('import-file');
 function exportTasks() {
   const dataStr = JSON.stringify(tasks, null, 2);
   const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  
+
   const url = URL.createObjectURL(dataBlob);
   const link = document.createElement('a');
   link.href = url;
@@ -278,12 +323,12 @@ function exportTasks() {
 function importTasks(event) {
   const file = event.target.files[0];
   if (!file) return;
-  
+
   const reader = new FileReader();
   reader.onload = function(e) {
     try {
       const importedTasks = JSON.parse(e.target.result);
-      
+
       if (Array.isArray(importedTasks)) {
         if (confirm(`Импортировать ${importedTasks.length} задач? Текущие задачи будут заменены.`)) {
           tasks = importedTasks;
@@ -299,7 +344,7 @@ function importTasks(event) {
     }
   };
   reader.readAsText(file);
-  
+
   event.target.value = '';
 }
 

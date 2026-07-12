@@ -11,9 +11,11 @@
   <header class="app-header">
     <h1 class="app-title">📋 Трекер задач</h1>
     <div class="app-actions">
-      <button id="theme-toggle" class="btn btn-icon" title="Сменить тему">🌙</button>
-      <button id="export-btn" class="btn" title="Экспорт в JSON">️ Экспорт</button>
-      <button id="import-btn" class="btn" title="Импорт из JSON">⬆️ Импорт</button>
+      <button id="theme-toggle" class="btn btn-icon" title="Сменить тему">
+        <img src="icons/moon.png" alt="Тёмная тема" class="icon icon-theme" id="theme-icon">
+      </button>
+      <button id="export-btn" class="btn" title="Экспорт в JSON">Экспорт</button>
+      <button id="import-btn" class="btn" title="Импорт из JSON">Импорт</button>
       <input type="file" id="import-file" accept=".json" hidden>
     </div>
   </header>
@@ -51,7 +53,7 @@
     </section>
   </main>
 
-  <!-- Модальное окно -->
+  <!-- Модальное окно создания/редактирования задачи -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <header class="modal-header">
@@ -70,7 +72,7 @@
         <label class="form-field">
           <span>Приоритет</span>
           <select id="task-priority">
-            <option value="low">🟢 Низкий</option>
+            <option value="low"> Низкий</option>
             <option value="medium" selected>🟡 Средний</option>
             <option value="high">🔴 Высокий</option>
           </select>

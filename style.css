@@ -701,3 +701,49 @@ body::after {
     font-size: 0.85rem;
   }
 }
+
+/* ===== ТЁМНАЯ ТЕМА - МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
+@media (max-width: 768px) {
+  [data-theme="dark"] body {
+    background: var(--gradient-bg);
+    background-attachment: scroll; /* Не фиксируем фон на мобильных */
+  }
+  
+  [data-theme="dark"] .column {
+    background: rgba(26, 15, 20, 0.95); /* Более тёмный фон колонок */
+    border: 1px solid rgba(244, 122, 173, 0.2);
+  }
+  
+  [data-theme="dark"] .task-card {
+    background: rgba(42, 21, 32, 0.9); /* Тёмный фон карточек */
+    border: 1px solid rgba(244, 122, 173, 0.15);
+  }
+  
+  [data-theme="dark"] .modal-content {
+    background: rgba(26, 15, 20, 0.98); /* Почти чёрный фон модалки */
+  }
+  
+  [data-theme="dark"] .app-header {
+    background: rgba(26, 15, 20, 0.95); /* Тёмная шапка */
+  }
+  
+  /* Убираем размытые круги на мобильных для производительности */
+  [data-theme="dark"] body::before,
+  [data-theme="dark"] body::after {
+    display: none;
+  }
+}
+
+/* ===== ГЛОБАЛЬНАЯ ТЁМНАЯ ТЕМА ===== */
+[data-theme="dark"] body {
+  background: linear-gradient(135deg, #0f0709 0%, #1a0b12 50%, #140818 100%);
+  background-attachment: fixed;
+}
+
+[data-theme="dark"] .column {
+  background: linear-gradient(145deg, rgba(26, 11, 18, 0.95) 0%, rgba(42, 21, 32, 0.9) 100%);
+}
+
+[data-theme="dark"] .task-card {
+  background: rgba(42, 21, 32, 0.85);
+}

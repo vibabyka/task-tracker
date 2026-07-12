@@ -329,3 +329,23 @@ body {
   outline-offset: -4px;
   border-radius: 6px;
 }
+
+/* ===== ТЁМНАЯ ТЕМА ===== */
+[data-theme="dark"] {
+  --bg: #1a1a2e;
+  --surface: #16213e;
+  --text: #eaeaea;
+  --text-muted: #a0a0a0;
+  --border: #0f3460;
+  --primary: #e94560;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .column-body.drag-over {
+  background: rgba(233, 69, 96, 0.1);
+  outline-color: var(--primary);
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #ff6b6b;
+}

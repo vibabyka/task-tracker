@@ -107,13 +107,11 @@ function initDragAndDrop() {
   const cards = document.querySelectorAll('.task-card');
   const dropZones = document.querySelectorAll('.column-body');
   
-  // Инициализация карточек
   cards.forEach(card => {
     card.addEventListener('dragstart', handleDragStart);
     card.addEventListener('dragend', handleDragEnd);
   });
   
-  // Инициализация зон сброса
   dropZones.forEach(zone => {
     zone.addEventListener('dragover', handleDragOver);
     zone.addEventListener('dragenter', handleDragEnter);
@@ -130,8 +128,6 @@ function handleDragStart(e) {
 
 function handleDragEnd(e) {
   this.classList.remove('dragging');
-  
-  // Убираем подсветку со всех зон
   document.querySelectorAll('.column-body').forEach(zone => {
     zone.classList.remove('drag-over');
   });
@@ -148,7 +144,6 @@ function handleDragEnter(e) {
 }
 
 function handleDragLeave(e) {
-  // Проверяем, что уходим именно из зоны, а не в её дочерний элемент
   if (!this.contains(e.relatedTarget)) {
     this.classList.remove('drag-over');
   }
@@ -161,7 +156,6 @@ function handleDrop(e) {
   const taskId = e.dataTransfer.getData('text/plain');
   const newStatus = this.dataset.dropZone;
   
-  // Находим задачу и меняем её статус
   const task = tasks.find(t => t.id == taskId);
   if (task && task.status !== newStatus) {
     task.status = newStatus;
@@ -172,16 +166,14 @@ function handleDrop(e) {
 
 // ===== РЕНДЕРИНГ =====
 function renderTasks() {
-  // Очищаем все колонки
   document.querySelectorAll('.column-body').forEach(zone => {
     zone.innerHTML = '';
   });
 
-  // Создаём карточки
   tasks.forEach(task => {
     const card = document.createElement('article');
     card.className = 'task-card';
-    card.draggable = true; // Делаем карточку перетаскиваемой
+    card.draggable = true;
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
     
@@ -211,10 +203,7 @@ function renderTasks() {
     }
   });
 
-  // Инициализируем Drag & Drop
   initDragAndDrop();
-  
-  // Обновляем счётчики
   updateCounters();
 }
 
@@ -240,7 +229,85 @@ function updateCounters() {
   if (doneCounter) doneCounter.textContent = counters['done'];
 }
 
-// ===== СОБЫТИЯ =====
+// ===== ТЁМНАЯ ТЕМА =====
+const themeToggle = document.getElementById('theme-toggle');
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem('task-tracker-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+}
+
+function saveTheme(theme) {
+  localStorage.setItem('task-tracker-theme', theme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  
+  document.documentElement.setAttribute('data-theme', newTheme);
+  saveTheme(newTheme);
+  updateThemeIcon(newTheme);
+}
+
+function updateThemeIcon(theme) {
+  themeToggle.textContent = theme === 'light' ? '🌙' : '️';
+}
+
+loadTheme();
+themeToggle.addEventListener('click', toggleTheme);
+
+// ===== ЭКСПОРТ/ИМПОРТ JSON =====
+const exportBtn = document.getElementById('export-btn');
+const importBtn = document.getElementById('import-btn');
+const importFile = document.getElementById('import-file');
+
+function exportTasks() {
+  const dataStr = JSON.stringify(tasks, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `tasks_${new Date().toISOString().split('T')[0]}.json`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function importTasks(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedTasks = JSON.parse(e.target.result);
+      
+      if (Array.isArray(importedTasks)) {
+        if (confirm(`Импортировать ${importedTasks.length} задач? Текущие задачи будут заменены.`)) {
+          tasks = importedTasks;
+          saveTasks();
+          renderTasks();
+          alert('Задачи успешно импортированы!');
+        }
+      } else {
+        alert('Неверный формат файла!');
+      }
+    } catch (error) {
+      alert('Ошибка при чтении файла: ' + error.message);
+    }
+  };
+  reader.readAsText(file);
+  
+  event.target.value = '';
+}
+
+exportBtn.addEventListener('click', exportTasks);
+importBtn.addEventListener('click', () => importFile.click());
+importFile.addEventListener('change', importTasks);
+
+// ===== СОБЫТИЯ МОДАЛЬНОГО ОКНА =====
 document.getElementById('modal-close').addEventListener('click', closeModal);
 document.getElementById('modal-cancel').addEventListener('click', closeModal);
 modal.addEventListener('click', e => {

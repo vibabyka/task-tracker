@@ -45,12 +45,9 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
   --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
-  /* Яркие цвета приоритетов для тёмной темы */
-  --priority-low: #34d399;
-  --priority-medium: #fbbf24;
-  --priority-high: #f87171;
 }
 
+/* ===== Сброс стилей ===== */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -68,6 +65,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Декоративные размытые круги на фоне */
 body::before,
 body::after {
   content: '';
@@ -337,45 +335,42 @@ body::after {
   box-shadow: var(--shadow-xl);
 }
 
-/* Цвета приоритетов - СВЕТЛАЯ ТЕМА */
+/* ===== Цвета приоритетов - СВЕТЛАЯ ТЕМА ===== */
 .task-card[data-priority="low"] {
-  border-left-color: #10b981;
-  border-left-width: 5px;
+  border-left: 5px solid #10b981 !important;
 }
 .task-card[data-priority="low"]::before {
   background: linear-gradient(90deg, #10b981, #34d399);
 }
 
 .task-card[data-priority="medium"] {
-  border-left-color: #f59e0b;
-  border-left-width: 5px;
+  border-left: 5px solid #f59e0b !important;
 }
 .task-card[data-priority="medium"]::before {
   background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
 .task-card[data-priority="high"] {
-  border-left-color: #ef4444;
-  border-left-width: 5px;
+  border-left: 5px solid #ef4444 !important;
 }
 .task-card[data-priority="high"]::before {
   background: linear-gradient(90deg, #ef4444, #f87171);
 }
 
-/* Цвета приоритетов - ТЁМНАЯ ТЕМА (яркие, неоновые) */
+/* ===== Цвета приоритетов - ТЁМНАЯ ТЕМА (яркие неоновые) ===== */
 [data-theme="dark"] .task-card[data-priority="low"] {
-  border-left-color: #34d399;
-  box-shadow: 0 0 12px rgba(52, 211, 153, 0.3);
+  border-left: 5px solid #34d399 !important;
+  box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
 }
 
 [data-theme="dark"] .task-card[data-priority="medium"] {
-  border-left-color: #fbbf24;
-  box-shadow: 0 0 12px rgba(251, 191, 36, 0.3);
+  border-left: 5px solid #fbbf24 !important;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
 }
 
 [data-theme="dark"] .task-card[data-priority="high"] {
-  border-left-color: #f87171;
-  box-shadow: 0 0 12px rgba(248, 113, 113, 0.3);
+  border-left: 5px solid #f87171 !important;
+  box-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
 }
 
 .task-title {
@@ -409,29 +404,6 @@ body::after {
   gap: 4px;
 }
 
-
-/* Яркие бейджи в тёмной теме */
-[data-theme="dark"] .priority-badge.low {
-  background: rgba(52, 211, 153, 0.2);
-  color: #34d399;
-  border-color: rgba(52, 211, 153, 0.5);
-  box-shadow: 0 0 8px rgba(52, 211, 153, 0.2);
-}
-
-[data-theme="dark"] .priority-badge.medium {
-  background: rgba(251, 191, 36, 0.2);
-  color: #fbbf24;
-  border-color: rgba(251, 191, 36, 0.5);
-  box-shadow: 0 0 8px rgba(251, 191, 36, 0.2);
-}
-
-[data-theme="dark"] .priority-badge.high {
-  background: rgba(248, 113, 113, 0.2);
-  color: #f87171;
-  border-color: rgba(248, 113, 113, 0.5);
-  box-shadow: 0 0 8px rgba(248, 113, 113, 0.2);
-}
-
 .task-actions {
   display: flex;
   gap: 6px;
@@ -452,7 +424,6 @@ body::after {
 }
 
 .task-actions .delete-btn:hover {
-  color: var(--priority-high);
   background: rgba(239, 68, 68, 0.1);
 }
 

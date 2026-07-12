@@ -88,7 +88,7 @@ function saveTask(e) {
   
   closeModal();
   renderTasks();
-  saveTasks(); // Сохраняем в localStorage
+  saveTasks();
 }
 
 function deleteTask(id) {
@@ -98,16 +98,18 @@ function deleteTask(id) {
   if (index !== -1) {
     tasks.splice(index, 1);
     renderTasks();
-    saveTasks(); // Сохраняем в localStorage
+    saveTasks();
   }
 }
 
 // ===== РЕНДЕРИНГ =====
 function renderTasks() {
+  // Очищаем все колонки
   document.querySelectorAll('.column-body').forEach(zone => {
     zone.innerHTML = '';
   });
 
+  // Создаём карточки
   tasks.forEach(task => {
     const card = document.createElement('article');
     card.className = 'task-card';
@@ -140,6 +142,7 @@ function renderTasks() {
     }
   });
 
+  // ОБНОВЛЯЕМ СЧЁТЧИКИ
   updateCounters();
 }
 
@@ -151,12 +154,20 @@ function updateCounters() {
   };
 
   tasks.forEach(task => {
-    counters[task.status]++;
+    if (counters.hasOwnProperty(task.status)) {
+      counters[task.status]++;
+    }
   });
 
-  document.querySelector('[data-counter="todo"]').textContent = counters['todo'];
-  document.querySelector('[data-counter="in-progress"]').textContent = counters['in-progress'];
-  document.querySelector('[data-counter="done"]').textContent = counters['done'];
+  const todoCounter = document.querySelector('[data-counter="todo"]');
+  const inProgressCounter = document.querySelector('[data-counter="in-progress"]');
+  const doneCounter = document.querySelector('[data-counter="done"]');
+
+  if (todoCounter) todoCounter.textContent = counters['todo'];
+  if (inProgressCounter) inProgressCounter.textContent = counters['in-progress'];
+  if (doneCounter) doneCounter.textContent = counters['done'];
+  
+  console.log('Счётчики обновлены:', counters); // Для отладки
 }
 
 // ===== СОБЫТИЯ =====

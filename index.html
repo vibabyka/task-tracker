@@ -12,7 +12,7 @@
     <h1 class="app-title">📋 Трекер задач</h1>
     <div class="app-actions">
       <button id="theme-toggle" class="btn btn-icon" title="Сменить тему">🌙</button>
-      <button id="export-btn" class="btn" title="Экспорт в JSON">⬇️ Экспорт</button>
+      <button id="export-btn" class="btn" title="Экспорт в JSON">️ Экспорт</button>
       <button id="import-btn" class="btn" title="Импорт из JSON">⬆️ Импорт</button>
       <input type="file" id="import-file" accept=".json" hidden>
     </div>
@@ -50,6 +50,38 @@
       <button class="btn btn-add" data-add="done">+ Добавить задачу</button>
     </section>
   </main>
+
+  <!-- Модальное окно -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <header class="modal-header">
+        <h2 id="modal-title">Новая задача</h2>
+        <button id="modal-close" class="btn btn-icon" aria-label="Закрыть">✖</button>
+      </header>
+      <form id="task-form" class="modal-body">
+        <label class="form-field">
+          <span>Название задачи *</span>
+          <input type="text" id="task-title" required maxlength="80" placeholder="Например: Сделать отчёт">
+        </label>
+        <label class="form-field">
+          <span>Описание</span>
+          <textarea id="task-description" rows="3" maxlength="300" placeholder="Детали задачи..."></textarea>
+        </label>
+        <label class="form-field">
+          <span>Приоритет</span>
+          <select id="task-priority">
+            <option value="low">🟢 Низкий</option>
+            <option value="medium" selected>🟡 Средний</option>
+            <option value="high">🔴 Высокий</option>
+          </select>
+        </label>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel" class="btn">Отмена</button>
+          <button type="submit" class="btn btn-primary">Сохранить</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="app.js"></script>
 </body>

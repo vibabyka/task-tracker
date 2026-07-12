@@ -343,3 +343,97 @@ document.querySelectorAll('[data-add]').forEach(btn => {
 
 // ===== ЗАПУСК =====
 document.addEventListener('DOMContentLoaded', renderTasks);
+
+// ===== TOUCH DRAG & DROP (для мобильных) =====
+let touchItem = null;
+let touchStartY = 0;
+let touchCurrentY = 0;
+
+function initTouchDragAndDrop() {
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  document.addEventListener('touchend', handleTouchEnd, { passive: false });
+}
+
+function handleTouchStart(e) {
+  const card = e.target.closest('.task-card');
+  if (card) {
+    touchItem = card;
+    touchStartY = e.touches[0].clientY;
+    card.classList.add('touch-dragging');
+    card.style.position = 'fixed';
+    card.style.zIndex = '1000';
+    card.style.width = card.offsetWidth + 'px';
+    updateTouchPosition(e.touches[0]);
+  }
+}
+
+function handleTouchMove(e) {
+  if (touchItem) {
+    e.preventDefault();
+    updateTouchPosition(e.touches[0]);
+    
+    // Определяем, над какой колонкой находится карточка
+    const touchX = e.touches[0].clientX;
+    const touchY = e.touches[0].clientY;
+    const elementBelow = document.elementFromPoint(touchX, touchY);
+    const column = elementBelow?.closest('.column');
+    
+    // Подсвечиваем колонку
+    document.querySelectorAll('.column-body').forEach(zone => {
+      zone.classList.remove('drag-over');
+    });
+    
+    if (column) {
+      const columnBody = column.querySelector('.column-body');
+      if (columnBody) {
+        columnBody.classList.add('drag-over');
+      }
+    }
+  }
+}
+
+function handleTouchEnd(e) {
+  if (touchItem) {
+    const changedTouch = e.changedTouches[0];
+    const elementBelow = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
+    const column = elementBelow?.closest('.column');
+    
+    if (column) {
+      const newStatus = column.dataset.status;
+      const taskId = parseInt(touchItem.dataset.id);
+      const task = tasks.find(t => t.id === taskId);
+      
+      if (task && task.status !== newStatus) {
+        task.status = newStatus;
+        saveTasks();
+        renderTasks();
+      }
+    }
+    
+    // Возвращаем стили
+    touchItem.classList.remove('touch-dragging');
+    touchItem.style.position = '';
+    touchItem.style.zIndex = '';
+    touchItem.style.width = '';
+    touchItem.style.left = '';
+    touchItem.style.top = '';
+    
+    // Убираем подсветку
+    document.querySelectorAll('.column-body').forEach(zone => {
+      zone.classList.remove('drag-over');
+    });
+    
+    touchItem = null;
+  }
+}
+
+function updateTouchPosition(touch) {
+  if (touchItem) {
+    touchItem.style.left = (touch.clientX - touchItem.offsetWidth / 2) + 'px';
+    touchItem.style.top = (touch.clientY - touchItem.offsetHeight / 2) + 'px';
+  }
+}
+
+// Инициализация Touch Drag & Drop
+initTouchDragAndDrop();

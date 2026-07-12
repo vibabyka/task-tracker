@@ -1,8 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta name="description" content="Трекер задач с канбан-доской">
-  <meta name="author" content="vibabyka">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Трекер задач</title>
@@ -14,7 +12,7 @@
     <h1 class="app-title">📋 Трекер задач</h1>
     <div class="app-actions">
       <button id="theme-toggle" class="btn btn-icon" title="Сменить тему">
-        <img src="icons/moon.png" alt="Тёмная тема" class="icon icon-theme" id="theme-icon">
+        <img src="icons/Moon.png" alt="Тёмная тема" class="icon icon-theme" id="theme-icon">
       </button>
       <button id="export-btn" class="btn" title="Экспорт в JSON">Экспорт</button>
       <button id="import-btn" class="btn" title="Импорт из JSON">Импорт</button>
@@ -60,7 +58,7 @@
     <div class="modal-content">
       <header class="modal-header">
         <h2 id="modal-title">Новая задача</h2>
-        <button id="modal-close" class="btn btn-icon" aria-label="Закрыть">✖</button>
+        <button id="modal-close" class="btn btn-icon" aria-label="Закрыть"></button>
       </header>
       <form id="task-form" class="modal-body">
         <label class="form-field">
@@ -74,7 +72,7 @@
         <label class="form-field">
           <span>Приоритет</span>
           <select id="task-priority">
-            <option value="low"> Низкий</option>
+            <option value="low">🟢 Низкий</option>
             <option value="medium" selected>🟡 Средний</option>
             <option value="high">🔴 Высокий</option>
           </select>

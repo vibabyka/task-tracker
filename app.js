@@ -23,14 +23,11 @@ let tasks = loadTasks();
 // ИСПРАВЛЕНО: имена файлов на GitHub с большой буквы!
 function getIconPath(name) {
   const theme = document.documentElement.getAttribute('data-theme') || 'light';
-  // Первая буква с большой буквы (Calendar, Moon, Pencil, Trash, Sun)
   const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
   
   if (theme === 'dark') {
-    // Розовые иконки для тёмной темы (с буквой 's' и большой буквы)
     return `icons/${capitalName}s.png`;
   } else {
-    // Чёрные иконки для светлой темы (с большой буквы)
     return `icons/${capitalName}.png`;
   }
 }
@@ -189,7 +186,6 @@ function renderTasks() {
     card.dataset.priority = task.priority;
     card.dataset.id = task.id;
 
-    // ИСПОЛЬЗУЕМ getIconPath() для выбора иконки с правильным регистром
     card.innerHTML = `
       <div class="task-title">${task.title}</div>
       <div class="task-desc">${task.description}</div>
@@ -269,7 +265,6 @@ function toggleTheme() {
   document.documentElement.setAttribute('data-theme', newTheme);
   saveTheme(newTheme);
   updateThemeIcon(newTheme);
-  // Перерисовываем карточки с новыми иконками
   renderTasks();
 }
 

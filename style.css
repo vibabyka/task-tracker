@@ -793,3 +793,23 @@ body::after {
     border-color: rgba(244, 122, 173, 0.3);
   }
 }
+
+/* ===== Запрет случайного перетаскивания при скролле ===== */
+.task-card {
+  /* Разрешаем скролл по умолчанию, запрещаем перетаскивание браузером */
+  touch-action: pan-y;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Когда перетаскивание активно — запрещаем скролл */
+.task-card.touch-dragging {
+  touch-action: none;
+}
+
+/* Визуальная обратная связь при удержании (перед началом перетаскивания) */
+.task-card.touch-holding {
+  transform: scale(0.98);
+  transition: transform 0.15s ease;
+}

@@ -20,7 +20,6 @@ function saveTasks() {
 let tasks = loadTasks();
 
 // ===== ФУНКЦИЯ ПОЛУЧЕНИЯ ПУТИ К ИКОНКЕ =====
-// ИСПРАВЛЕНО: имена файлов на GitHub с большой буквы!
 function getIconPath(name) {
   const theme = document.documentElement.getAttribute('data-theme') || 'light';
   const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
@@ -113,7 +112,7 @@ function deleteTask(id) {
   }
 }
 
-// ===== DRAG & DROP =====
+// ===== DRAG & DROP (десктоп) =====
 function initDragAndDrop() {
   const cards = document.querySelectorAll('.task-card');
   const dropZones = document.querySelectorAll('.column-body');
@@ -173,267 +172,193 @@ function handleDrop(e) {
   }
 }
 
-// ===== РЕНДЕРИНГ =====
-function renderTasks() {
-  document.querySelectorAll('.column-body').forEach(zone => {
-    zone.innerHTML = '';
-  });
-
-  tasks.forEach(task => {
-    const card = document.createElement('article');
-    card.className = 'task-card';
-    card.draggable = true;
-    card.dataset.priority = task.priority;
-    card.dataset.id = task.id;
-
-    card.innerHTML = `
-      <div class="task-title">${task.title}</div>
-      <div class="task-desc">${task.description}</div>
-      <div class="task-meta">
-        <span class="task-date">
-          <img src="${getIconPath('calendar')}" alt="Дата" class="icon icon-calendar">
-          ${task.createdAt}
-        </span>
-        <div class="task-actions">
-          <button class="edit-btn" title="Редактировать">
-            <img src="${getIconPath('pencil')}" alt="Редактировать" class="icon icon-pencil">
-          </button>
-          <button class="delete-btn" title="Удалить">
-            <img src="${getIconPath('trash')}" alt="Удалить" class="icon icon-trash">
-          </button>
-        </div>
-      </div>
-    `;
-
-    card.querySelector('.edit-btn').addEventListener('click', () => {
-      openModal(task);
-    });
-
-    card.querySelector('.delete-btn').addEventListener('click', () => {
-      deleteTask(task.id);
-    });
-
-    const zone = document.querySelector(`[data-drop-zone="${task.status}"]`);
-    if (zone) {
-      zone.appendChild(card);
-    }
-  });
-
-  initDragAndDrop();
-  updateCounters();
-}
-
-function updateCounters() {
-  const counters = {
-    'todo': 0,
-    'in-progress': 0,
-    'done': 0
-  };
-
-  tasks.forEach(task => {
-    if (counters.hasOwnProperty(task.status)) {
-      counters[task.status]++;
-    }
-  });
-
-  const todoCounter = document.querySelector('[data-counter="todo"]');
-  const inProgressCounter = document.querySelector('[data-counter="in-progress"]');
-  const doneCounter = document.querySelector('[data-counter="done"]');
-
-  if (todoCounter) todoCounter.textContent = counters['todo'];
-  if (inProgressCounter) inProgressCounter.textContent = counters['in-progress'];
-  if (doneCounter) doneCounter.textContent = counters['done'];
-}
-
-// ===== ТЁМНАЯ ТЕМА =====
-const themeToggle = document.getElementById('theme-toggle');
-const themeIcon = document.getElementById('theme-icon');
-
-function loadTheme() {
-  const savedTheme = localStorage.getItem('task-tracker-theme') || 'light';
-  document.documentElement.setAttribute('data-theme', savedTheme);
-  updateThemeIcon(savedTheme);
-}
-
-function saveTheme(theme) {
-  localStorage.setItem('task-tracker-theme', theme);
-}
-
-function toggleTheme() {
-  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-  document.documentElement.setAttribute('data-theme', newTheme);
-  saveTheme(newTheme);
-  updateThemeIcon(newTheme);
-  renderTasks();
-}
-
-function updateThemeIcon(theme) {
-  if (theme === 'light') {
-    themeIcon.src = getIconPath('moon');
-    themeIcon.alt = 'Переключить на тёмную тему';
-  } else {
-    themeIcon.src = getIconPath('sun');
-    themeIcon.alt = 'Переключить на светлую тему';
-  }
-}
-
-loadTheme();
-themeToggle.addEventListener('click', toggleTheme);
-
-// ===== ЭКСПОРТ/ИМПОРТ JSON =====
-const exportBtn = document.getElementById('export-btn');
-const importBtn = document.getElementById('import-btn');
-const importFile = document.getElementById('import-file');
-
-function exportTasks() {
-  const dataStr = JSON.stringify(tasks, null, 2);
-  const dataBlob = new Blob([dataStr], { type: 'application/json' });
-  const url = URL.createObjectURL(dataBlob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `tasks_${new Date().toISOString().split('T')[0]}.json`;
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
-function importTasks(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const importedTasks = JSON.parse(e.target.result);
-      if (Array.isArray(importedTasks)) {
-        if (confirm(`Импортировать ${importedTasks.length} задач? Текущие задачи будут заменены.`)) {
-          tasks = importedTasks;
-          saveTasks();
-          renderTasks();
-          alert('Задачи успешно импортированы!');
-        }
-      } else {
-        alert('Неверный формат файла!');
-      }
-    } catch (error) {
-      alert('Ошибка при чтении файла: ' + error.message);
-    }
-  };
-  reader.readAsText(file);
-  event.target.value = '';
-}
-
-exportBtn.addEventListener('click', exportTasks);
-importBtn.addEventListener('click', () => importFile.click());
-importFile.addEventListener('change', importTasks);
-
-// ===== СОБЫТИЯ МОДАЛЬНОГО ОКНА =====
-document.getElementById('modal-close').addEventListener('click', closeModal);
-document.getElementById('modal-cancel').addEventListener('click', closeModal);
-modal.addEventListener('click', e => {
-  if (e.target === modal) closeModal();
-});
-taskForm.addEventListener('submit', saveTask);
-
-document.querySelectorAll('[data-add]').forEach(btn => {
-  btn.addEventListener('click', () => {
-    openModal(null, btn.dataset.add);
-  });
-});
-
-// ===== ЗАПУСК =====
-document.addEventListener('DOMContentLoaded', renderTasks);
-
-// ===== TOUCH DRAG & DROP (для мобильных) =====
+// ===== TOUCH DRAG & DROP (мобильные) =====
+// ===== TOUCH DRAG & DROP (мобильные) =====
 let touchItem = null;
+let touchClone = null;
+let touchStartX = 0;
 let touchStartY = 0;
-let touchCurrentY = 0;
+let touchOffsetX = 0;
+let touchOffsetY = 0;
+let touchStartTime = 0;
+let touchMoved = false;
+let touchHoldTimer = null;
+let touchHoldStarted = false;
+let activeColumn = null;
+const TOUCH_HOLD_DELAY = 200; // мс — задержка перед началом перетаскивания
+const TOUCH_MOVE_THRESHOLD = 8; // px — порог движения
 
 function initTouchDragAndDrop() {
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
   document.addEventListener('touchmove', handleTouchMove, { passive: false });
   document.addEventListener('touchend', handleTouchEnd, { passive: false });
+  document.addEventListener('touchcancel', handleTouchCancel, { passive: false });
 }
 
 function handleTouchStart(e) {
   const card = e.target.closest('.task-card');
-  if (card) {
-    touchItem = card;
-    touchStartY = e.touches[0].clientY;
-    card.classList.add('touch-dragging');
-    card.style.position = 'fixed';
-    card.style.zIndex = '1000';
-    card.style.width = card.offsetWidth + 'px';
-    updateTouchPosition(e.touches[0]);
+  if (!card) return;
+  
+  // Игнорируем кнопки редактирования/удаления
+  if (e.target.closest('.edit-btn') || e.target.closest('.delete-btn')) {
+    return;
   }
+
+  touchItem = card;
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = Date.now();
+  touchMoved = false;
+  touchHoldStarted = false;
+
+  // Вычисляем смещение точки касания относительно карточки
+  const rect = card.getBoundingClientRect();
+  touchOffsetX = touchStartX - rect.left;
+  touchOffsetY = touchStartY - rect.top;
+
+  // Запускаем таймер задержки — перетаскивание начнётся только через 200мс
+  touchHoldTimer = setTimeout(() => {
+    touchHoldStarted = true;
+    // Лёгкая вибрация при захвате (если поддерживается)
+    if (navigator.vibrate) {
+      navigator.vibrate(30);
+    }
+  }, TOUCH_HOLD_DELAY);
 }
 
 function handleTouchMove(e) {
-  if (touchItem) {
-    e.preventDefault();
-    updateTouchPosition(e.touches[0]);
-    
-    // Определяем, над какой колонкой находится карточка
-    const touchX = e.touches[0].clientX;
-    const touchY = e.touches[0].clientY;
-    const elementBelow = document.elementFromPoint(touchX, touchY);
-    const column = elementBelow?.closest('.column');
-    
-    // Подсвечиваем колонку
-    document.querySelectorAll('.column-body').forEach(zone => {
-      zone.classList.remove('drag-over');
-    });
-    
-    if (column) {
-      const columnBody = column.querySelector('.column-body');
-      if (columnBody) {
-        columnBody.classList.add('drag-over');
-      }
+  if (!touchItem) return;
+
+  const touch = e.touches[0];
+  const deltaX = Math.abs(touch.clientX - touchStartX);
+  const deltaY = Math.abs(touch.clientY - touchStartY);
+
+  // Если таймер задержки ещё не истёк — это скролл, отменяем перетаскивание
+  if (!touchHoldStarted) {
+    // Если палец сдвинулся больше порога ДО истечения таймера — это скролл
+    if (deltaX > TOUCH_MOVE_THRESHOLD || deltaY > TOUCH_MOVE_THRESHOLD) {
+      clearTimeout(touchHoldTimer);
+      touchItem = null;
     }
+    return;
+  }
+
+  // Перетаскивание активно
+  if (deltaX < 5 && deltaY < 5) {
+    return; // Слишком маленькое движение — игнорируем
+  }
+
+  e.preventDefault();
+
+  // Создаём клон карточки для визуального эффекта
+  if (!touchClone) {
+    touchClone = touchItem.cloneNode(true);
+    touchClone.classList.add('touch-clone');
+    touchClone.style.position = 'fixed';
+    touchClone.style.zIndex = '10000';
+    touchClone.style.width = touchItem.offsetWidth + 'px';
+    touchClone.style.pointerEvents = 'none';
+    document.body.appendChild(touchClone);
+    
+    touchItem.classList.add('touch-dragging');
+  }
+
+  // Двигаем клон
+  touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
+  touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
+
+  // Определяем колонку под пальцем
+  touchClone.style.display = 'none';
+  const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+  touchClone.style.display = '';
+
+  const newColumn = elementBelow?.closest('.column');
+
+  document.querySelectorAll('.column').forEach(col => {
+    col.classList.remove('column-highlight');
+  });
+
+  if (newColumn && newColumn !== activeColumn) {
+    newColumn.classList.add('column-highlight');
+    activeColumn = newColumn;
+  } else if (!newColumn && activeColumn) {
+    activeColumn.classList.remove('column-highlight');
+    activeColumn = null;
   }
 }
 
 function handleTouchEnd(e) {
-  if (touchItem) {
-    const changedTouch = e.changedTouches[0];
-    const elementBelow = document.elementFromPoint(changedTouch.clientX, changedTouch.clientY);
-    const column = elementBelow?.closest('.column');
-    
-    if (column) {
-      const newStatus = column.dataset.status;
-      const taskId = parseInt(touchItem.dataset.id);
-      const task = tasks.find(t => t.id === taskId);
-      
-      if (task && task.status !== newStatus) {
-        task.status = newStatus;
-        saveTasks();
-        renderTasks();
-      }
-    }
-    
-    // Возвращаем стили
-    touchItem.classList.remove('touch-dragging');
-    touchItem.style.position = '';
-    touchItem.style.zIndex = '';
-    touchItem.style.width = '';
-    touchItem.style.left = '';
-    touchItem.style.top = '';
-    
-    // Убираем подсветку
-    document.querySelectorAll('.column-body').forEach(zone => {
-      zone.classList.remove('drag-over');
-    });
-    
+  // Очищаем таймер задержки
+  clearTimeout(touchHoldTimer);
+
+  if (!touchItem) return;
+
+  // Если перетаскивание не началось (был скролл или короткий тап)
+  if (!touchHoldStarted) {
     touchItem = null;
+    return;
   }
+
+  const touch = e.changedTouches[0];
+
+  touchClone.style.display = 'none';
+  const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
+  touchClone.style.display = '';
+
+  const column = elementBelow?.closest('.column');
+
+  if (column) {
+    const newStatus = column.dataset.status;
+    const taskId = parseInt(touchItem.dataset.id);
+    const task = tasks.find(t => t.id === taskId);
+
+    if (task && task.status !== newStatus) {
+      task.status = newStatus;
+      saveTasks();
+      renderTasks();
+      
+      setTimeout(() => {
+        const newCard = document.querySelector(`[data-id="${taskId}"]`);
+        if (newCard) {
+          newCard.classList.add('task-dropped');
+          setTimeout(() => newCard.classList.remove('task-dropped'), 600);
+        }
+      }, 50);
+    }
+  }
+
+  if (touchClone) {
+    touchClone.remove();
+    touchClone = null;
+  }
+
+  touchItem.classList.remove('touch-dragging');
+
+  document.querySelectorAll('.column').forEach(col => {
+    col.classList.remove('column-highlight');
+  });
+
+  touchItem = null;
+  activeColumn = null;
 }
 
-function updateTouchPosition(touch) {
+function handleTouchCancel(e) {
+  clearTimeout(touchHoldTimer);
+  if (touchClone) {
+    touchClone.remove();
+    touchClone = null;
+  }
   if (touchItem) {
-    touchItem.style.left = (touch.clientX - touchItem.offsetWidth / 2) + 'px';
-    touchItem.style.top = (touch.clientY - touchItem.offsetHeight / 2) + 'px';
+    touchItem.classList.remove('touch-dragging');
   }
+  document.querySelectorAll('.column').forEach(col => {
+    col.classList.remove('column-highlight');
+  });
+  touchItem = null;
+  activeColumn = null;
 }
-
-// Инициализация Touch Drag & Drop
-initTouchDragAndDrop();
+// ===== ЗАПУСК =====
+document.addEventListener('DOMContentLoaded', () => {
+  renderTasks();
+  initTouchDragAndDrop();
+});

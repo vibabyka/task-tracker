@@ -23,11 +23,10 @@ let tasks = loadTasks();
 function getIconPath(name) {
   const theme = document.documentElement.getAttribute('data-theme') || 'light';
   const capitalName = name.charAt(0).toUpperCase() + name.slice(1);
-  
   if (theme === 'dark') {
-    return `icons/${capitalName}s.png`;
+    return 'icons/' + capitalName + 's.png';
   } else {
-    return `icons/${capitalName}.png`;
+    return 'icons/' + capitalName + '.png';
   }
 }
 
@@ -41,7 +40,9 @@ const taskPriorityInput = document.getElementById('task-priority');
 let editingId = null;
 let currentStatus = 'todo';
 
-function openModal(task = null, status = 'todo') {
+function openModal(task, status) {
+  task = task || null;
+  status = status || 'todo';
   if (task) {
     modalTitle.textContent = 'Редактирование задачи';
     editingId = task.id;
@@ -78,7 +79,7 @@ function saveTask(e) {
   };
 
   if (editingId) {
-    const task = tasks.find(t => t.id === editingId);
+    const task = tasks.find(function(t) { return t.id === editingId; });
     if (task) {
       task.title = data.title;
       task.description = data.description;
@@ -104,7 +105,7 @@ function saveTask(e) {
 
 function deleteTask(id) {
   if (!confirm('Удалить задачу?')) return;
-  const index = tasks.findIndex(t => t.id === id);
+  const index = tasks.findIndex(function(t) { return t.id === id; });
   if (index !== -1) {
     tasks.splice(index, 1);
     renderTasks();
@@ -117,12 +118,12 @@ function initDragAndDrop() {
   const cards = document.querySelectorAll('.task-card');
   const dropZones = document.querySelectorAll('.column-body');
 
-  cards.forEach(card => {
+  cards.forEach(function(card) {
     card.addEventListener('dragstart', handleDragStart);
     card.addEventListener('dragend', handleDragEnd);
   });
 
-  dropZones.forEach(zone => {
+  dropZones.forEach(function(zone) {
     zone.addEventListener('dragover', handleDragOver);
     zone.addEventListener('dragenter', handleDragEnter);
     zone.addEventListener('dragleave', handleDragLeave);
@@ -138,7 +139,7 @@ function handleDragStart(e) {
 
 function handleDragEnd(e) {
   this.classList.remove('dragging');
-  document.querySelectorAll('.column-body').forEach(zone => {
+  document.querySelectorAll('.column-body').forEach(function(zone) {
     zone.classList.remove('drag-over');
   });
 }
@@ -164,7 +165,7 @@ function handleDrop(e) {
   this.classList.remove('drag-over');
   const taskId = e.dataTransfer.getData('text/plain');
   const newStatus = this.dataset.dropZone;
-  const task = tasks.find(t => t.id == taskId);
+  const task = tasks.find(function(t) { return t.id == taskId; });
   if (task && task.status !== newStatus) {
     task.status = newStatus;
     saveTasks();
@@ -172,21 +173,19 @@ function handleDrop(e) {
   }
 }
 
-// ===== TOUCH DRAG & DROP (мобильные) =====
-// ===== TOUCH DRAG & DROP (мобильные) =====
+// ===== TOUCH DRAG & DROP (мобильные) С ЗАДЕРЖКОЙ =====
 let touchItem = null;
 let touchClone = null;
 let touchStartX = 0;
 let touchStartY = 0;
 let touchOffsetX = 0;
 let touchOffsetY = 0;
-let touchStartTime = 0;
-let touchMoved = false;
 let touchHoldTimer = null;
 let touchHoldStarted = false;
 let activeColumn = null;
-const TOUCH_HOLD_DELAY = 200; // мс — задержка перед началом перетаскивания
-const TOUCH_MOVE_THRESHOLD = 8; // px — порог движения
+
+const TOUCH_HOLD_DELAY = 250;
+const TOUCH_MOVE_THRESHOLD = 10;
 
 function initTouchDragAndDrop() {
   document.addEventListener('touchstart', handleTouchStart, { passive: false });
@@ -198,8 +197,7 @@ function initTouchDragAndDrop() {
 function handleTouchStart(e) {
   const card = e.target.closest('.task-card');
   if (!card) return;
-  
-  // Игнорируем кнопки редактирования/удаления
+
   if (e.target.closest('.edit-btn') || e.target.closest('.delete-btn')) {
     return;
   }
@@ -207,19 +205,14 @@ function handleTouchStart(e) {
   touchItem = card;
   touchStartX = e.touches[0].clientX;
   touchStartY = e.touches[0].clientY;
-  touchStartTime = Date.now();
-  touchMoved = false;
   touchHoldStarted = false;
 
-  // Вычисляем смещение точки касания относительно карточки
   const rect = card.getBoundingClientRect();
   touchOffsetX = touchStartX - rect.left;
   touchOffsetY = touchStartY - rect.top;
 
-  // Запускаем таймер задержки — перетаскивание начнётся только через 200мс
-  touchHoldTimer = setTimeout(() => {
+  touchHoldTimer = setTimeout(function() {
     touchHoldStarted = true;
-    // Лёгкая вибрация при захвате (если поддерживается)
     if (navigator.vibrate) {
       navigator.vibrate(30);
     }
@@ -233,9 +226,7 @@ function handleTouchMove(e) {
   const deltaX = Math.abs(touch.clientX - touchStartX);
   const deltaY = Math.abs(touch.clientY - touchStartY);
 
-  // Если таймер задержки ещё не истёк — это скролл, отменяем перетаскивание
   if (!touchHoldStarted) {
-    // Если палец сдвинулся больше порога ДО истечения таймера — это скролл
     if (deltaX > TOUCH_MOVE_THRESHOLD || deltaY > TOUCH_MOVE_THRESHOLD) {
       clearTimeout(touchHoldTimer);
       touchItem = null;
@@ -243,14 +234,10 @@ function handleTouchMove(e) {
     return;
   }
 
-  // Перетаскивание активно
-  if (deltaX < 5 && deltaY < 5) {
-    return; // Слишком маленькое движение — игнорируем
-  }
+  if (deltaX < 5 && deltaY < 5) return;
 
   e.preventDefault();
 
-  // Создаём клон карточки для визуального эффекта
   if (!touchClone) {
     touchClone = touchItem.cloneNode(true);
     touchClone.classList.add('touch-clone');
@@ -259,22 +246,19 @@ function handleTouchMove(e) {
     touchClone.style.width = touchItem.offsetWidth + 'px';
     touchClone.style.pointerEvents = 'none';
     document.body.appendChild(touchClone);
-    
     touchItem.classList.add('touch-dragging');
   }
 
-  // Двигаем клон
   touchClone.style.left = (touch.clientX - touchOffsetX) + 'px';
   touchClone.style.top = (touch.clientY - touchOffsetY) + 'px';
 
-  // Определяем колонку под пальцем
   touchClone.style.display = 'none';
   const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
   touchClone.style.display = '';
 
-  const newColumn = elementBelow?.closest('.column');
+  const newColumn = elementBelow ? elementBelow.closest('.column') : null;
 
-  document.querySelectorAll('.column').forEach(col => {
+  document.querySelectorAll('.column').forEach(function(col) {
     col.classList.remove('column-highlight');
   });
 
@@ -288,12 +272,10 @@ function handleTouchMove(e) {
 }
 
 function handleTouchEnd(e) {
-  // Очищаем таймер задержки
   clearTimeout(touchHoldTimer);
 
   if (!touchItem) return;
 
-  // Если перетаскивание не началось (был скролл или короткий тап)
   if (!touchHoldStarted) {
     touchItem = null;
     return;
@@ -301,27 +283,33 @@ function handleTouchEnd(e) {
 
   const touch = e.changedTouches[0];
 
-  touchClone.style.display = 'none';
+  if (touchClone) {
+    touchClone.style.display = 'none';
+  }
   const elementBelow = document.elementFromPoint(touch.clientX, touch.clientY);
-  touchClone.style.display = '';
+  if (touchClone) {
+    touchClone.style.display = '';
+  }
 
-  const column = elementBelow?.closest('.column');
+  const column = elementBelow ? elementBelow.closest('.column') : null;
 
   if (column) {
     const newStatus = column.dataset.status;
     const taskId = parseInt(touchItem.dataset.id);
-    const task = tasks.find(t => t.id === taskId);
+    const task = tasks.find(function(t) { return t.id === taskId; });
 
     if (task && task.status !== newStatus) {
       task.status = newStatus;
       saveTasks();
       renderTasks();
-      
-      setTimeout(() => {
-        const newCard = document.querySelector(`[data-id="${taskId}"]`);
+
+      setTimeout(function() {
+        const newCard = document.querySelector('[data-id="' + taskId + '"]');
         if (newCard) {
           newCard.classList.add('task-dropped');
-          setTimeout(() => newCard.classList.remove('task-dropped'), 600);
+          setTimeout(function() {
+            newCard.classList.remove('task-dropped');
+          }, 600);
         }
       }, 50);
     }
@@ -334,7 +322,7 @@ function handleTouchEnd(e) {
 
   touchItem.classList.remove('touch-dragging');
 
-  document.querySelectorAll('.column').forEach(col => {
+  document.querySelectorAll('.column').forEach(function(col) {
     col.classList.remove('column-highlight');
   });
 
@@ -351,14 +339,181 @@ function handleTouchCancel(e) {
   if (touchItem) {
     touchItem.classList.remove('touch-dragging');
   }
-  document.querySelectorAll('.column').forEach(col => {
+  document.querySelectorAll('.column').forEach(function(col) {
     col.classList.remove('column-highlight');
   });
   touchItem = null;
   activeColumn = null;
 }
+
+// ===== РЕНДЕРИНГ =====
+function renderTasks() {
+  document.querySelectorAll('.column-body').forEach(function(zone) {
+    zone.innerHTML = '';
+  });
+
+  tasks.forEach(function(task) {
+    const card = document.createElement('article');
+    card.className = 'task-card';
+    card.draggable = true;
+    card.dataset.priority = task.priority;
+    card.dataset.id = task.id;
+
+    card.innerHTML = '<div class="task-title">' + task.title + '</div>' +
+      '<div class="task-desc">' + task.description + '</div>' +
+      '<div class="task-meta">' +
+        '<span class="task-date">' +
+          '<img src="' + getIconPath('calendar') + '" alt="Дата" class="icon icon-calendar">' +
+          ' ' + task.createdAt +
+        '</span>' +
+        '<div class="task-actions">' +
+          '<button class="edit-btn" title="Редактировать">' +
+            '<img src="' + getIconPath('pencil') + '" alt="Редактировать" class="icon icon-pencil">' +
+          '</button>' +
+          '<button class="delete-btn" title="Удалить">' +
+            '<img src="' + getIconPath('trash') + '" alt="Удалить" class="icon icon-trash">' +
+          '</button>' +
+        '</div>' +
+      '</div>';
+
+    card.querySelector('.edit-btn').addEventListener('click', function() {
+      openModal(task);
+    });
+
+    card.querySelector('.delete-btn').addEventListener('click', function() {
+      deleteTask(task.id);
+    });
+
+    const zone = document.querySelector('[data-drop-zone="' + task.status + '"]');
+    if (zone) {
+      zone.appendChild(card);
+    }
+  });
+
+  initDragAndDrop();
+  updateCounters();
+}
+
+function updateCounters() {
+  const counters = {
+    'todo': 0,
+    'in-progress': 0,
+    'done': 0
+  };
+
+  tasks.forEach(function(task) {
+    if (counters.hasOwnProperty(task.status)) {
+      counters[task.status]++;
+    }
+  });
+
+  const todoCounter = document.querySelector('[data-counter="todo"]');
+  const inProgressCounter = document.querySelector('[data-counter="in-progress"]');
+  const doneCounter = document.querySelector('[data-counter="done"]');
+
+  if (todoCounter) todoCounter.textContent = counters['todo'];
+  if (inProgressCounter) inProgressCounter.textContent = counters['in-progress'];
+  if (doneCounter) doneCounter.textContent = counters['done'];
+}
+
+// ===== ТЁМНАЯ ТЕМА =====
+const themeToggle = document.getElementById('theme-toggle');
+const themeIcon = document.getElementById('theme-icon');
+
+function loadTheme() {
+  const savedTheme = localStorage.getItem('task-tracker-theme') || 'light';
+  document.documentElement.setAttribute('data-theme', savedTheme);
+  updateThemeIcon(savedTheme);
+}
+
+function saveTheme(theme) {
+  localStorage.setItem('task-tracker-theme', theme);
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+  const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+  document.documentElement.setAttribute('data-theme', newTheme);
+  saveTheme(newTheme);
+  updateThemeIcon(newTheme);
+  renderTasks();
+}
+
+function updateThemeIcon(theme) {
+  if (theme === 'light') {
+    themeIcon.src = getIconPath('moon');
+    themeIcon.alt = 'Переключить на тёмную тему';
+  } else {
+    themeIcon.src = getIconPath('sun');
+    themeIcon.alt = 'Переключить на светлую тему';
+  }
+}
+
+loadTheme();
+themeToggle.addEventListener('click', toggleTheme);
+
+// ===== ЭКСПОРТ/ИМПОРТ JSON =====
+const exportBtn = document.getElementById('export-btn');
+const importBtn = document.getElementById('import-btn');
+const importFile = document.getElementById('import-file');
+
+function exportTasks() {
+  const dataStr = JSON.stringify(tasks, null, 2);
+  const dataBlob = new Blob([dataStr], { type: 'application/json' });
+  const url = URL.createObjectURL(dataBlob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'tasks_' + new Date().toISOString().split('T')[0] + '.json';
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+function importTasks(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const importedTasks = JSON.parse(e.target.result);
+      if (Array.isArray(importedTasks)) {
+        if (confirm('Импортировать ' + importedTasks.length + ' задач? Текущие задачи будут заменены.')) {
+          tasks = importedTasks;
+          saveTasks();
+          renderTasks();
+          alert('Задачи успешно импортированы!');
+        }
+      } else {
+        alert('Неверный формат файла!');
+      }
+    } catch (error) {
+      alert('Ошибка при чтении файла: ' + error.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+exportBtn.addEventListener('click', exportTasks);
+importBtn.addEventListener('click', function() { importFile.click(); });
+importFile.addEventListener('change', importTasks);
+
+// ===== СОБЫТИЯ МОДАЛЬНОГО ОКНА =====
+document.getElementById('modal-close').addEventListener('click', closeModal);
+document.getElementById('modal-cancel').addEventListener('click', closeModal);
+modal.addEventListener('click', function(e) {
+  if (e.target === modal) closeModal();
+});
+taskForm.addEventListener('submit', saveTask);
+
+document.querySelectorAll('[data-add]').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    openModal(null, btn.dataset.add);
+  });
+});
+
 // ===== ЗАПУСК =====
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function() {
   renderTasks();
   initTouchDragAndDrop();
 });

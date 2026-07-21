@@ -1,18 +1,27 @@
 /* ===== CSS-переменные (Розовый градиент F47AAD - DBCBCE) ===== */
 :root {
+  /* Основные цвета градиента */
   --gradient-start: #F47AAD;
   --gradient-end: #DBCBCE;
+
+  /* Градиенты */
   --gradient-bg: linear-gradient(135deg, #F47AAD 0%, #DBCBCE 100%);
   --gradient-accent: linear-gradient(135deg, #F47AAD 0%, #e89bb8 50%, #DBCBCE 100%);
   --gradient-card: linear-gradient(145deg, rgba(255, 255, 255, 0.95) 0%, rgba(219, 203, 206, 0.6) 100%);
   --gradient-header: linear-gradient(90deg, #F47AAD 0%, #DBCBCE 100%);
   --gradient-primary: linear-gradient(135deg, #F47AAD 0%, #e89bb8 100%);
+
+  /* Фоновые цвета */
   --bg: #faf5f7;
   --surface: rgba(255, 255, 255, 0.85);
   --surface-solid: #ffffff;
+
+  /* Текст */
   --text: #2d1b2e;
   --text-muted: #6b5a6e;
   --text-light: #9a8a9c;
+
+  /* Границы и тени */
   --border: rgba(244, 122, 173, 0.25);
   --border-strong: rgba(244, 122, 173, 0.4);
   --shadow-sm: 0 2px 8px rgba(244, 122, 173, 0.1);
@@ -20,10 +29,14 @@
   --shadow-lg: 0 8px 32px rgba(244, 122, 173, 0.2);
   --shadow-xl: 0 12px 48px rgba(244, 122, 173, 0.25);
   --shadow-glow: 0 0 30px rgba(244, 122, 173, 0.3);
+
+  /* Скругления */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
   --radius-xl: 24px;
+
+  /* Цвета приоритетов */
   --priority-low: #10b981;
   --priority-medium: #f59e0b;
   --priority-high: #ef4444;
@@ -31,20 +44,20 @@
 
 /* ===== ТЁМНАЯ ТЕМА ===== */
 [data-theme="dark"] {
-  --bg: #0f0709;
-  --surface: rgba(26, 11, 18, 0.95);
-  --surface-solid: #1a0b12;
+  --bg: #1a0f14;
+  --surface: rgba(40, 20, 30, 0.85);
+  --surface-solid: #2a1520;
   --text: #f9f5f7;
   --text-muted: #d1c4c8;
   --text-light: #9a8a9c;
   --border: rgba(244, 122, 173, 0.3);
   --border-strong: rgba(244, 122, 173, 0.5);
-  --gradient-bg: linear-gradient(135deg, #0f0709 0%, #1a0b12 50%, #140818 100%);
-  --gradient-card: linear-gradient(145deg, rgba(26, 11, 18, 0.95) 0%, rgba(42, 21, 32, 0.9) 100%);
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --shadow-xl: 0 12px 48px rgba(0, 0, 0, 0.6);
+  --gradient-bg: linear-gradient(135deg, #1a0f14 0%, #2a1520 50%, #1f1018 100%);
+  --gradient-card: linear-gradient(145deg, rgba(42, 21, 32, 0.9) 0%, rgba(60, 30, 45, 0.9) 100%);
+  --shadow-sm: 0 2px 8px rgba(244, 122, 173, 0.2);
+  --shadow-md: 0 4px 16px rgba(244, 122, 173, 0.25);
+  --shadow-lg: 0 8px 32px rgba(244, 122, 173, 0.3);
+  --shadow-xl: 0 12px 48px rgba(244, 122, 173, 0.35);
 }
 
 /* ===== Сброс стилей ===== */
@@ -96,8 +109,12 @@ body::after {
 }
 
 @keyframes float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(30px, -30px) scale(1.1); }
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(30px, -30px) scale(1.1);
+  }
 }
 
 /* ===== Шапка ===== */
@@ -157,7 +174,7 @@ body::after {
 }
 
 .btn:active {
-  transform: translateY(0) scale(0.98);
+  transform: translateY(0);
 }
 
 .btn-primary {
@@ -290,7 +307,7 @@ body::after {
 .task-card {
   background: var(--surface-solid);
   border: 1px solid var(--border);
-  border-left: 5px solid var(--priority-medium);
+  border-left: 4px solid var(--priority-medium);
   border-radius: var(--radius-md);
   padding: 16px;
   cursor: grab;
@@ -298,12 +315,6 @@ body::after {
   box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  user-select: none;
-  -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
-  touch-action: pan-y;
 }
 
 .task-card::before {
@@ -335,42 +346,29 @@ body::after {
   box-shadow: var(--shadow-xl);
 }
 
-/* ===== Цвета приоритетов - СВЕТЛАЯ ТЕМА ===== */
+/* Цвета приоритетов */
 .task-card[data-priority="low"] {
-  border-left: 5px solid #10b981 !important;
+  border-left-color: var(--priority-low);
 }
+
 .task-card[data-priority="low"]::before {
   background: linear-gradient(90deg, #10b981, #34d399);
 }
 
 .task-card[data-priority="medium"] {
-  border-left: 5px solid #f59e0b !important;
+  border-left-color: var(--priority-medium);
 }
+
 .task-card[data-priority="medium"]::before {
   background: linear-gradient(90deg, #f59e0b, #fbbf24);
 }
 
 .task-card[data-priority="high"] {
-  border-left: 5px solid #ef4444 !important;
+  border-left-color: var(--priority-high);
 }
+
 .task-card[data-priority="high"]::before {
   background: linear-gradient(90deg, #ef4444, #f87171);
-}
-
-/* ===== Цвета приоритетов - ТЁМНАЯ ТЕМА (яркие неоновые) ===== */
-[data-theme="dark"] .task-card[data-priority="low"] {
-  border-left: 5px solid #34d399 !important;
-  box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
-}
-
-[data-theme="dark"] .task-card[data-priority="medium"] {
-  border-left: 5px solid #fbbf24 !important;
-  box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
-}
-
-[data-theme="dark"] .task-card[data-priority="high"] {
-  border-left: 5px solid #f87171 !important;
-  box-shadow: 0 0 15px rgba(248, 113, 113, 0.4);
 }
 
 .task-title {
@@ -394,8 +392,6 @@ body::after {
   align-items: center;
   font-size: 0.75rem;
   color: var(--text-light);
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 .task-date {
@@ -414,17 +410,12 @@ body::after {
   border: none;
   cursor: pointer;
   padding: 4px 6px;
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   transition: all 0.2s ease;
 }
 
 .task-actions button:hover {
-  background: rgba(244, 122, 173, 0.15);
-  transform: scale(1.15);
-}
-
-.task-actions .delete-btn:hover {
-  background: rgba(239, 68, 68, 0.1);
+  background: rgba(244, 122, 173, 0.1);
 }
 
 /* ===== Модальное окно ===== */
@@ -557,109 +548,6 @@ body::after {
   border-top: 1px solid var(--border);
 }
 
-/* ===== PNG Иконки ===== */
-.icon {
-  width: 18px;
-  height: 18px;
-  display: inline-block;
-  vertical-align: middle;
-  transition: all 0.2s ease;
-  object-fit: contain;
-}
-
-.icon-calendar {
-  margin-right: 6px;
-  opacity: 0.8;
-}
-
-.icon-pencil,
-.icon-trash {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-}
-
-.task-actions button:hover .icon {
-  opacity: 1;
-  transform: scale(1.15);
-}
-
-.btn-icon .icon {
-  width: 24px;
-  height: 24px;
-}
-
-.icon-theme {
-  transition: transform 0.3s ease;
-}
-
-.btn-icon:hover .icon-theme {
-  transform: rotate(20deg) scale(1.1);
-}
-
-/* ===== Анимация появления карточек ===== */
-@keyframes cardAppear {
-  from {
-    opacity: 0;
-    transform: translateY(20px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.task-card {
-  animation: cardAppear 0.4s ease-out;
-}
-
-.task-card:nth-child(1) { animation-delay: 0.05s; }
-.task-card:nth-child(2) { animation-delay: 0.1s; }
-.task-card:nth-child(3) { animation-delay: 0.15s; }
-.task-card:nth-child(4) { animation-delay: 0.2s; }
-
-/* ===== Touch Drag & Drop ===== */
-.task-card.touch-dragging {
-  opacity: 0.3;
-  transform: scale(0.95);
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  touch-action: none;
-}
-
-.touch-clone {
-  opacity: 0.95;
-  transform: scale(1.08) rotate(2deg);
-  box-shadow: 
-    0 20px 60px rgba(244, 122, 173, 0.4),
-    0 10px 30px rgba(0, 0, 0, 0.2);
-  border-radius: 12px;
-  animation: touchPulse 0.6s ease-in-out infinite;
-}
-
-@keyframes touchPulse {
-  0%, 100% { transform: scale(1.08) rotate(2deg); }
-  50% { transform: scale(1.1) rotate(-1deg); }
-}
-
-.column.column-highlight {
-  background: rgba(244, 122, 173, 0.15) !important;
-  border: 2px dashed #F47AAD !important;
-  box-shadow: 
-    0 0 30px rgba(244, 122, 173, 0.3),
-    inset 0 0 20px rgba(244, 122, 173, 0.1) !important;
-  transition: all 0.3s ease;
-}
-
-.task-card.task-dropped {
-  animation: dropSuccess 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes dropSuccess {
-  0% { transform: scale(0.8); opacity: 0; }
-  50% { transform: scale(1.05); opacity: 1; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
 /* ===== Адаптивность ===== */
 @media (max-width: 1024px) {
   .board {
@@ -700,56 +588,6 @@ body::after {
   }
 }
 
-@media (max-width: 480px) {
-  .app-title {
-    font-size: 1.2rem;
-  }
-  .column {
-    padding: 16px;
-  }
-  .btn {
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
-}
-
-/* ===== ТЁМНАЯ ТЕМА - МОБИЛЬНАЯ АДАПТАЦИЯ ===== */
-@media (max-width: 768px) {
-  [data-theme="dark"] body {
-    background: #0f0709;
-    background-attachment: scroll;
-  }
-
-  [data-theme="dark"] body::before,
-  [data-theme="dark"] body::after {
-    display: none;
-  }
-
-  [data-theme="dark"] .column {
-    background: rgba(26, 11, 18, 0.98);
-    border: 1px solid rgba(244, 122, 173, 0.15);
-  }
-
-  [data-theme="dark"] .task-card {
-    background: rgba(42, 21, 32, 0.95);
-    border: 1px solid rgba(244, 122, 173, 0.1);
-  }
-
-  [data-theme="dark"] .app-header {
-    background: rgba(15, 7, 9, 0.98);
-    border-bottom: 1px solid rgba(244, 122, 173, 0.2);
-  }
-
-  [data-theme="dark"] .modal-content {
-    background: rgba(26, 11, 18, 0.98);
-  }
-
-  [data-theme="dark"] .btn-add {
-    background: rgba(244, 122, 173, 0.05);
-    border-color: rgba(244, 122, 173, 0.3);
-  }
-}
-
 /* ===== Скроллбар ===== */
 ::-webkit-scrollbar {
   width: 10px;
@@ -768,4 +606,98 @@ body::after {
 
 ::-webkit-scrollbar-thumb:hover {
   background: var(--gradient-accent);
+}
+
+/* ===== Анимация появления карточек ===== */
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.task-card {
+  animation: cardAppear 0.4s ease-out;
+}
+
+.task-card:nth-child(1) { animation-delay: 0.05s; }
+.task-card:nth-child(2) { animation-delay: 0.1s; }
+.task-card:nth-child(3) { animation-delay: 0.15s; }
+.task-card:nth-child(4) { animation-delay: 0.2s; }
+
+/* ===== PNG Иконки ===== */
+.icon {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+  vertical-align: middle;
+  transition: all 0.2s ease;
+  object-fit: contain;
+}
+
+.icon-calendar {
+  margin-right: 6px;
+  opacity: 0.8;
+}
+
+.icon-pencil,
+.icon-trash {
+  width: 16px;
+  height: 16px;
+  opacity: 0.7;
+}
+
+.task-actions button:hover .icon {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+/* Иконка темы в шапке */
+.btn-icon {
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-icon:hover {
+  background: rgba(244, 122, 173, 0.15);
+}
+
+.btn-icon .icon {
+  width: 24px;
+  height: 24px;
+}
+
+.icon-theme {
+  transition: transform 0.3s ease;
+}
+
+.btn-icon:hover .icon-theme {
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* Улучшение анимации кнопок */
+.btn:active {
+  transform: scale(0.98);
+}
+
+/* Адаптивность для очень маленьких экранов */
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 1.2rem;
+  }
+  .column {
+    padding: 16px;
+  }
+  .btn {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
 }
